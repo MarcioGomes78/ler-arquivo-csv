@@ -1,44 +1,57 @@
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Program {
 
 	public static void main(String[] args) {
+
+		String path = "c:\\temp\\in.txt";
 		
-		// Para fazer a leitura de uma entrada padrão, ou seja, do terminal quando estamos digitando 
-		// Só que o Scanner ele também funciona para ler arquivos, fazendo uma injeção de dependência
-		// utilizando o polimorfismo
-		// System.in representa a entrada padrão do java
-		// Só que podemos instanciar o Scanner baseado em uma stream de um arquivo ("file ou o caminho")
-		File file = new File("c:\\temp\\in.txt"); 
-		Scanner sc = null;
+		// FileReader é uma classe padrão para ler stream(fluxo) de dados
+		FileReader fr = null;
 		
-		// Se der certo
+		//Lógica
+		// 1- Instancia p FIleReader para ter uma Referencia da stream de entrada que vai ser lida
+		// 2- Dapois em cima do FileReader vc vai instanciar o BufferedReader
+		
+		// Gerencia a memória usada para a leitura, ela é uma classe mais otimizada e mais rápida  
+		BufferedReader br = null;
+		
+		// A maneira mais prática para ler o arquivo tetxo, leia de linha a linha
+		// E façao tratamento nessa linha se vc precisar.
 		try {
-			sc = new Scanner(file); // se der uma excessão de o Scanner não existe, vai para o catch
-			//A função hasNextLine retorna veerdadeiro se vc ainda não chegou no fim do arquivo
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
-				System.out.println(line);
-			}
-		}
-		
-		// se der errado
-		catch (IOException e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-		}
-		// Finally serve para colocar fechamneto de recursos
-		//dando certo ou errado ele finaliza
-		finally {
-			//Se o Scannernão estiver aberto dará uma excessão de ponteiro nulo(NullPointerException)
-			// Para evitar o NPE colaca-se um if
-			if (sc != null) {
-				sc.close();
-			}
+			fr = new FileReader(path);
+			br = new BufferedReader(fr);
 			
+			//readLine faz a leitura do arqwuivo até a quebra de linha 
+			//e reorna uma string com a leitura que ele fez
+			String line = br.readLine();
+			//Para ler até o final doarquivo usamos o while
+			while (line != null) {
+				System.out.println(line);
+				line = br.readLine();
+			}
 		}
+		catch (IOException e){
+			System.out.println("Error: " + e.getMessage());
+		}
+		finally {
+			// Para evitar o NullPointerException usamos o if
+			try {
+				if (fr != null) {
+					fr.close();
+				}
+				if (br != null) {
+					br.close();
+				}
+			}
+			catch (IOException e) {
+				// imprime todos os erros na tela
+				e.printStackTrace();
+			}
+		}
+	
 	}
 
 }
